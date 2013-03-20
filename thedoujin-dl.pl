@@ -11,7 +11,9 @@ use Archive::Zip qw(:ERROR_CODES :CONSTANTS);
 
 my $base_cats = "http://thedoujin.com/index.php/categories/";
 my $base_page = "http://thedoujin.com/index.php/pages/";
+
 my $dl_path   = "/home/rusty/dl/";
+my $save_dir  = "/tmp/";
 
 foreach (@ARGV) {
 	# Check if argument is a valid number. Can't begin with 0
@@ -81,7 +83,7 @@ foreach (@ARGV) {
 	my $print_format = "%0${zero_pad}d";
 
 	# Make directory for saved images
-	my $tmp_dir = "/tmp/".$_."/";
+	my $tmp_dir = $save_dir.$_."/";
 	mkpath($tmp_dir);
 
 	# Finally, load each page and save the image
@@ -121,8 +123,7 @@ foreach (@ARGV) {
 	}
 	print "Compressing to Zip...";
 	die "ERROR! Failed to write file to Zip!\n" unless ($zip->writeToFileNamed($title) == AZ_OK);
-	print "SUCCESS!\n";
-	print "Doujin \"$_\" saved to \"$title\"!\n\n";
+	print "SUCCESS!\nDoujin \"$_\" saved to \"$title\"!\n\n";
 
 	# Clean up
 	rmtree($tmp_dir, 0, 0);
