@@ -86,7 +86,7 @@ foreach (@ARGV) {
 	print "Language:    \"$lang\"\n";
 	print "Translator:  \"$trans\"\n";
 	print "Artist:      \"$artist\"\n";
-	print "Total pages: ";
+	print "Total pages:  ";
 
 	# Form the zip output name
 	my $out = $def_format;
@@ -106,7 +106,7 @@ foreach (@ARGV) {
 		$total_pages = $bold if ($bold =~ /^\d+?$/);
 	}
 	print $total_pages."\nDownloading pages...\n";
-	
+
 	# Load the first page, theere we can get the rest of the pages
 	$url .= "/read";
 	$mech->get($url);
