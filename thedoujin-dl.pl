@@ -26,7 +26,7 @@ foreach (@ARGV) {
 	# Create link and fetch page
 	my $url = $base_cats.$_;
 	$mech->get($url);
-	die "ERROR! Failed to fetch \"$url\"!\n" unless ($mech->success);
+	die "ERROR! Failed to fetch \"$url\"!\nSTATUS: $mech->status\n" unless ($mech->success);
 
 	# Parse HTML to tree
 	my $tree = HTML::TreeBuilder->new;
@@ -62,6 +62,7 @@ foreach (@ARGV) {
 	if ($total_pages != 0) {
 		$url = $base_cats."/".$_."?Pages_page=".$total_pages;
 		$mech->get($url);
+		die "ERROR! Failed to fetch \"$url\"!\nSTATUS: $mech->status\n" unless ($mech->success);
 
 		$tree->delete;
 		$tree = HTML::TreeBuilder->new;
@@ -115,7 +116,7 @@ foreach (@ARGV) {
 			}
 			elsif ($img =~ /^http:\/\/thedoujin.com\/images\//) {
 				# Download the page
-				die "ERROR! Failed to save \"$img\"!\n" unless $mech->get($img, ":content_file" => $save_n);
+				die "ERROR! Failed to save \"$img\"!\nSTATUS: $mech->status\n" unless $mech->get($img, ":content_file" => $save_n);
 				print "SUCCESS!\n";
 				my $zip_member = $zip->addFile($save_n, $zip_n);
 			}

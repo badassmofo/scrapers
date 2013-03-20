@@ -52,7 +52,7 @@ foreach (@ARGV) {
 	# Form URL and GET page
 	my $url = $base_url.$last_cat."/".$_;
 	$mech->get($url);
-	die "ERROR! Failed to fetch \"$url\"!\n" unless ($mech->success);
+	die "ERROR! Failed to fetch \"$url\"!\nSTATUS: $mech->status\n" unless ($mech->success);
 
 	# Parse page into tree
 	my $tree = HTML::TreeBuilder->new;
@@ -110,7 +110,7 @@ foreach (@ARGV) {
 	# Load the first page, theere we can get the rest of the pages
 	$url .= "/read";
 	$mech->get($url);
-	die "ERROR! Failed to fetch \"$url\"!\n" unless ($mech->success);
+	die "ERROR! Failed to fetch \"$url\"!\nSTATUS: $mech->status\n" unless ($mech->success);
 
 	# Page the HTML
 	$tree->delete;
@@ -163,7 +163,7 @@ foreach (@ARGV) {
 		}
 		else {
 			# Download the page
-			die "ERROR! Failed to save \"$file_url\"!\n" unless $mech->get($file_url, ":content_file" => $save_path);
+			die "ERROR! Failed to save \"$file_url\"!\nSTATUS: $mech->status\n" unless $mech->get($file_url, ":content_file" => $save_path);
 			print "SUCCESS!\n";
 			my $zip_member = $zip->addFile($save_path, $file_name);
 		}
