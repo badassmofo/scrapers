@@ -162,6 +162,7 @@ foreach (@ARGV) {
 			print "EXISTS!\n";
 		}
 		else {
+			# Download the page
 			die "ERROR! Failed to save \"$file_url\"!\n" unless $mech->get($file_url, ":content_file" => $save_path);
 			print "SUCCESS!\n";
 			my $zip_member = $zip->addFile($save_path, $file_name);
@@ -171,6 +172,7 @@ foreach (@ARGV) {
 	die "ERROR! Failed to write file to Zip!\n" unless ($zip->writeToFileNamed($dl_path.$out) == AZ_OK);
 	print "SUCCESS!\nDoujin \"$_\" saved to \"$out\"!\n\n";
 
+	# Clean up
 	rmtree($tmp_dir, 0, 0);
 	$tree->delete;
 }
