@@ -97,6 +97,7 @@ foreach (@ARGV) {
 		$tree = HTML::TreeBuilder->new;
 		$tree->parse($mech->content);
 
+		# Search for the right image
 		my @imgs = $tree->find(_tag => 'img');
 		for my $img (@imgs) {
 			$img       = $img->attr("src");
@@ -105,15 +106,16 @@ foreach (@ARGV) {
 			my $zip_n  = sprintf($print_format.$ext, $i);
 			my $save_n = $tmp_dir.$zip_n;
 
-			my $zip_member = undef;
+			# Check if file is already downloaded
 			if (-e $save_n) {
-				$zip_member = $zip->addFile($save_n, $zip_n);
 				print "EXISTS!\n";
+				my $zip_member = $zip->addFile($save_n, $zip_n);
 			}
 			elsif ($img =~ /^http:\/\/thedoujin.com\/images\//) {
+				# Download the page
 				die "ERROR! Failed to save \"$img\"!\n" unless $mech->get($img, ":content_file" => $save_n);
-				$zip_member = $zip->addFile($save_n, $zip_n);
 				print "SUCCESS!\n";
+				my $zip_member = $zip->addFile($save_n, $zip_n);
 			}
 		}
 	}
