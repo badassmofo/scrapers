@@ -9,10 +9,8 @@ use HTML::TreeBuilder 5 -weak;
 use File::Path qw(mkpath rmtree);
 use Archive::Zip qw(:ERROR_CODES :CONSTANTS);
 
-my $base_url   = "http://www.fakku.net/";
 my $def_format = "[%a] %t (%s) [%l]";
-
-my $dl_path    = "/home/rusty/dl/";
+my $dl_path    = "$ENV{'HOME'}/dl/";
 my $save_dir   = "/tmp/";
 
 my $last_format = $def_format;
@@ -50,7 +48,7 @@ foreach (@ARGV) {
 	print "Downloading Doujin \"$_\"...\nGathering info...";
 
 	# Form URL and GET page
-	my $url = $base_url.$last_cat."/".$_;
+	my $url = "http://www.fakku.net/".$last_cat."/".$_;
 	$mech->get($url);
 	die "ERROR! Failed to fetch \"$url\"!\nSTATUS: $mech->status\n" unless ($mech->success);
 
@@ -107,43 +105,11 @@ foreach (@ARGV) {
 	}
 	print $total_pages."\nDownloading pages...\n";
 
-	# Load the first page, theere we can get the rest of the pages
-	$url .= "/read";
-	$mech->get($url);
-	die "ERROR! Failed to fetch \"$url\"!\nSTATUS: $mech->status\n" unless ($mech->success);
-
-	# Page the HTML
-	$tree->delete;
-	$tree = HTML::TreeBuilder->new;
-	$tree->parse($mech->content);
-
-	# Get the Javascript that contains the links we need
-	my @scripts = $tree->look_down(_tag => 'script');
-	my $page_link = undef;
-	for my $script (@scripts) {
-		$script = $script->as_HTML;
-		if ($script =~ /^<script type="text\/javascript">jQuery/) {
-			$page_link = $script;
-			last; # We got what we need!
-		}
-	}
-	die "ERROR! Failed to parse Javascript!\n" if (!$page_link);
-
-	# Find all links inside of the Javascript
-	my (@link_matches) = ($page_link =~ m/(http:\/\/[^\s]+\.(png|gif|jpeg|jpg))/g);
-	my $final_link = undef;
-	for my $link (@link_matches) {
-		# Get the valid link
-		if ($link =~ /^http:\/\/cdn.fakku/) {
-			$final_link = $link;
-			last; # We got what we need!
-		}
-	}
-	die "ERROR! Failed to parse Javascript!\n" if (!$final_link);
-
-	# Get final images location and ext
-	my ($ext) = $final_link =~ /(\.[^.]+)$/;
-	$final_link =~ s/\'\+x\+\'$ext//g;
+	# Form the link to the images
+	(my $title_fl = lc($title)) =~ s/(^.{1}).*$/$1/;
+	(my $tmp_title = lc($title)) =~ s/ //g;
+	my $manga_title = sprintf("%s_%s", $tmp_title, ($lang eq "English" ? "e" : "j"));
+	my $final_link = "http://cdn.fakku.net/8041E1/c/manga/$title_fl/$manga_title/images/";
 
 	my $tmp_dir = $save_dir.$_."/";
 	mkpath($tmp_dir);
@@ -152,7 +118,7 @@ foreach (@ARGV) {
 	for (my $i = 1; $i <= $total_pages; $i++) {
 		printf "Downloading #%03d...", $i;
 
-		my $file_name = sprintf("%03d$ext", $i);
+		my $file_name = sprintf("%03d.jpg", $i);
 		my $file_url  = $final_link.$file_name;
 		my $save_path = $tmp_dir.$file_name;
 
