@@ -12,7 +12,7 @@ use Archive::Zip qw(:ERROR_CODES :CONSTANTS);
 my $base_cats = "http://thedoujin.com/index.php/categories/";
 my $base_page = "http://thedoujin.com/index.php/pages/";
 
-my $dl_path   = "/home/rusty/dl/";
+my $dl_path   = "$ENV{'HOME'}/dl/";
 my $save_dir  = "/tmp/";
 
 foreach (@ARGV) {

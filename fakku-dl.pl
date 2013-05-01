@@ -107,7 +107,7 @@ foreach (@ARGV) {
 
 	# Form the link to the images
 	(my $title_fl = lc($title)) =~ s/(^.{1}).*$/$1/;
-	(my $tmp_title = lc($title)) =~ s/ //g;
+	(my $tmp_title = lc($title)) =~ tr/\$#@~!&*()[];.,:?^ `\\\///d;
 	my $manga_title = sprintf("%s_%s", $tmp_title, ($lang eq "English" ? "e" : "j"));
 	my $final_link = "http://cdn.fakku.net/8041E1/c/manga/$title_fl/$manga_title/images/";
 
