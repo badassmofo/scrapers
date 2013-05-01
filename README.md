@@ -19,5 +19,6 @@ Format spcifiers:
 %l = language
 %u = translator
 perl fakku-dl.pl "--f=[%a] %t (%s) (%l)" manga koe-no-katachi-english doujinshi manga-amputee-vol1-japanese
+perl fakku-dl.pl "--f=[%a] %t (%s) (%l)" manga/koe-no-katachi-english doujinshi manga-amputee-vol1-japanese
 </pre>
 

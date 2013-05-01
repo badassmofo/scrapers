@@ -38,6 +38,10 @@ foreach (@ARGV) {
 		}
 		next;
 	}
+	elsif ($_ =~ /^(manga|doujinshi)\/(.*)$/) {
+		$last_cat = $1;
+		$_ = $2;
+	}
 
 	# Check if format is valid
 	if ($last_format !~ /%/) {
@@ -107,7 +111,7 @@ foreach (@ARGV) {
 
 	# Form the link to the images
 	(my $title_fl = lc($title)) =~ s/(^.{1}).*$/$1/;
-	(my $tmp_title = lc($title)) =~ tr/\$#@~!&*()[];.,:?^ `\\\///d;
+	(my $tmp_title = lc($title)) =~ tr/\$#@~\-!&*()[];.,:?^ `\\\///d;
 	my $manga_title = sprintf("%s_%s", $tmp_title, ($lang eq "English" ? "e" : "j"));
 	my $final_link = "http://cdn.fakku.net/8041E1/c/manga/$title_fl/$manga_title/images/";
 
