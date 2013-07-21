@@ -99,7 +99,6 @@ foreach (@ARGV) {
                     $skip_first = 1;
                 }
             }
-
         }
     }
 
