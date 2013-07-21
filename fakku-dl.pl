@@ -124,13 +124,13 @@ foreach (@ARGV) {
 
     my $final_link = undef;
     (my $title_fl = lc($title)) =~ s/(^.{1}).*$/$1/;
-    (my $tmp_title = $title) =~ tr/\$#@~\-!&*()[];.,:?^`\\\///d;
+    (my $tmp_title = $title) =~ tr/\$#@~\&*()[];.,:?^'"`\\\///d;
     my $manga_title = undef;
     if ($test_dt > $dt) {
-        $tmp_title   =~ tr/ //ds;
+        $tmp_title   =~ tr/-! //ds;
         $manga_title =  sprintf("%s_%s", lc($tmp_title), ($lang eq "English" ? "e" : "j"));
     } else {
-        $tmp_title   =~ tr/ /_/ds;
+        $tmp_title   =~ tr/ /_/s;
         $manga_title =  sprintf("%s_%s", $tmp_title, $lang);
     }
     $final_link = "http://cdn.fakku.net/8041E1/c/manga/$title_fl/$manga_title/images/";
@@ -162,6 +162,7 @@ foreach (@ARGV) {
         }
     }
     print "Compressing to Zip...";
+    $out =~ tr/\\\///ds;
     die "ERROR! Failed to write file to Zip!\n" unless ($zip->writeToFileNamed($dl_path.$out) == AZ_OK);
     print "SUCCESS!\nDoujin \"$_\" saved to \"$out\"!\n\n";
 
