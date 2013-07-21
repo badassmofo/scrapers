@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl -w
 use warnings;
 use strict;
 
@@ -19,25 +19,21 @@ foreach (@ARGV) {
         $last_cat = $_;
         print "Setting category to doujinshi!\n\n";
         next;
-    }
-    elsif ($_ =~ /^manga$/) { # Download from fakku/manga
+    } elsif ($_ =~ /^manga$/) { # Download from fakku/manga
         $last_cat = $_;
         print "Setting category to manga!\n\n";
         next;
-    }
-    elsif ($_ =~ /^--f=+?/) { # Get format for zip output
+    } elsif ($_ =~ /^--f=+?/) { # Get format for zip output
         $_ =~ s/--f=//g;
         if (length $_ == 0) {
             print "ERROR! No format passed! Using default!\n";
             $last_format = $def_format;
-        }
-        else {
+        } else {
             print "Setting format to: \"$_\"!\n\n";
             $last_format = $_;
         }
         next;
-    }
-    elsif ($_ =~ /^(manga|doujinshi)\/(.*)$/) {
+    } elsif ($_ =~ /^(manga|doujinshi)\/(.*)$/) {
         $last_cat = $1;
         $_ = $2;
     }
@@ -148,18 +144,16 @@ foreach (@ARGV) {
 
         # Check if file is already downloaded
         if (-e $save_path) {
-            my $zip_member = $zip->addFile($save_path, $file_name);
             print "EXISTS!\n";
-        }
-        else {
+        } else {
             # Download the page
             my $content = get $file_url or die die "ERROR! Failed to get \"$file_url\"!";
             open FH, ">$save_path" or die "ERROR! Failed to save file \"$save_path\"!";
             print FH $content;
             close FH;
             print "SUCCESS!\n";
-            my $zip_member = $zip->addFile($save_path, $file_name);
         }
+        $zip->addFile($save_path, $file_name);
     }
     print "Compressing to Zip...";
     $out =~ tr/\\\///ds;
