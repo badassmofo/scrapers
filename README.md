@@ -22,6 +22,11 @@ perl fakku-dl.pl "--f=[%a] %t (%s) (%l)" manga koe-no-katachi-english doujinshi 
 perl fakku-dl.pl "--f=[%a] %t (%s) (%l)" manga/koe-no-katachi-english doujinshi manga-amputee-vol1-japanese
 </pre>
 
+## dandy.pl
+<pre>
+perl dandy.pl [newest/random/id]
+</pre>
+
 ## License
 
 <pre>
