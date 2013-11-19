@@ -10,7 +10,11 @@ use Archive::Zip qw(:ERROR_CODES :CONSTANTS);
 my $base_cats = "http://thedoujin.com/index.php/categories/";
 my $base_page = "http://thedoujin.com/index.php/pages/";
 
-my $dl_path   = "$ENV{'HOME'}/dl/";
+# Set this to whatever path you want to download to
+# Note: Windows doesn't have the HOME enviroment variable set
+my $dl_path   = "$ENV{'HOME'}/Downloads/";
+# Windows also doesn't have the /tmp/ directory.
+# Instead there is C:\Windows\Temp\
 my $save_dir  = "/tmp/";
 
 foreach (@ARGV) {
@@ -35,7 +39,11 @@ foreach (@ARGV) {
     ($title)    = $tree->look_down(id => 'Categories_description')->as_text() if ($title eq "");
     ($title)    = time if ($title eq "" || $title =~ /\n.*\z/);
     print "SUCCESS!\nTitle: \"$title\"\nTotal pages: ";
-    $title      = $dl_path.$title.".zip"; # Add extension
+    if ($title =~ /.(zip|rar)$/i) {
+        $title = $dl_path.(substr($title, 0, -4).".cbz"); # Add extension
+    } else {
+        $title = $dl_path.$title.".cbz"; # Add extension
+    }
     die "ERROR! This Doujin is already downloaded!\n" if (-e $title);
 
     my $total_pages = 0;
@@ -54,16 +62,8 @@ foreach (@ARGV) {
 
     # Loop though all the files on the front page and get their links
     my @files = ();
-    my $skip_first = 0;
     for my $img ($tree->find(_tag => 'img')) {
-        $img = $img->attr('src');
-        if ($img =~ /^http:\/\/thedoujin.com\/thumbnails\/(\d+)\/thumbnail_(\w+).(jpg|png|gif)\?(\d+)$/) {
-            if ($skip_first) {
-                push (@files, sprintf("http://thedoujin.com/images/%d/%s.%s", $1, $2, $3));
-            } else {
-                $skip_first = 1;
-            }
-        }
+        push (@files, "http://thedoujin.com/images/$1/$2/$3.$4") if ($img->attr('src') =~ /^http:\/\/thedoujin.com\/thumbnails\/([0-9a-z]{2})\/([0-9a-z]{2})\/thumbnail_([0-9a-z]{32}).(jpg|png|gif)$/);
     }
 
     # Loop through all the pages on the category page to find the file names and locations
@@ -89,16 +89,8 @@ foreach (@ARGV) {
             }
         }
 
-        $skip_first = 0;
         for my $img ($tree->find(_tag => 'img')) {
-            $img = $img->attr('src');
-            if ($img =~ /^http:\/\/thedoujin.com\/thumbnails\/(\d+)\/thumbnail_(\w+).(jpg|png|gif)\?(\d+)$/) {
-                if ($skip_first) {
-                    push (@files, sprintf("http://thedoujin.com/images/%d/%s.%s", $1, $2, $3));
-                } else {
-                    $skip_first = 1;
-                }
-            }
+            push (@files, "http://thedoujin.com/images/$1/$2/$3.$4") if ($img->attr('src') =~ /^http:\/\/thedoujin.com\/thumbnails\/([0-9a-z]{2})\/([0-9a-z]{2})\/thumbnail_([0-9a-z]{32}).(jpg|png|gif)$/);
         }
     }
 
