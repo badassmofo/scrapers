@@ -2,14 +2,14 @@
 use warnings;
 use strict;
 
-use LWP::Simple;
+use LWP::UserAgent;
 use HTML::TreeBuilder 5 -weak;
 use File::Path qw(mkpath rmtree);
 use Archive::Zip qw(:ERROR_CODES :CONSTANTS);
 use DateTime;
 
 my $def_format = "[%a] %t (%s) [%l]";
-my $dl_path    = "$ENV{'HOME'}/dl/";
+my $dl_path    = "$ENV{'HOME'}/Downloads/";
 my $save_dir   = "/tmp/";
 
 my $last_format = $def_format;
@@ -46,9 +46,14 @@ foreach (@ARGV) {
 
     print "Downloading Doujin \"$_\"...\nGathering info...";
 
+    # Cloudflare blocks access without a user-agent
+    my $ua = LWP::UserAgent->new(timeout => 10, agent => 'Mozilla/5.0 (Windows NT x.y; WOW64; rv:10.0) Gecko/20100101 Firefox/10.0');
+
     # Form URL and GET page
     my $url = "http://www.fakku.net/".$last_cat."/".$_;
-    my $content = get $url or die "ERROR! Failed to fetch \"$url\"!";
+    my $response = $ua->get($url);
+    die "ERROR! Failed to fetch \"$url\"!" unless $response->code == '200';
+    my $content = $response->content;
 
     # Parse page into tree
     my $tree = HTML::TreeBuilder->new;
@@ -112,24 +117,15 @@ foreach (@ARGV) {
     }
     print $total_pages."\nDownloading pages...\n";
 
-    # Form the link to the images
-    my $test_dt = DateTime->new(
-        year  => 2013,
-        month => 5,
-        day   => 21);
-
-    my $final_link = undef;
-    (my $title_fl = lc($title)) =~ s/(^.{1}).*$/$1/;
-    (my $tmp_title = $title) =~ tr/\$#@~\&*()[];.,:?^'"`\\\///d;
-    my $manga_title = undef;
-    if ($test_dt > $dt) {
-        $tmp_title   =~ tr/-! //ds;
-        $manga_title =  sprintf("%s_%s", lc($tmp_title), ($lang eq "English" ? "e" : "j"));
-    } else {
-        $tmp_title   =~ tr/ /_/s;
-        $manga_title =  sprintf("%s_%s", $tmp_title, $lang);
+    my @imgs = $tree->look_down(_tag => 'img');
+    my $final_link = '';
+    for my $img (@imgs) {
+        $img = $img->attr('src');
+        $final_link = $img if $img =~ /^http:\/\/t\.fakku\.net\/images\/manga\/(d|m)\/(.*)\/thumbs\/001\.thumb\.jpg$/;
     }
-    $final_link = "http://cdn.fakku.net/8041E1/c/manga/$title_fl/$manga_title/images/";
+    $final_link =~ s/thumb\.//g;
+    $final_link =~ s/thumbs/images/g;
+    $final_link = substr $final_link, 0, -7;
 
     my $tmp_dir = $save_dir.$_."/";
     mkpath($tmp_dir);
@@ -147,7 +143,9 @@ foreach (@ARGV) {
             print "EXISTS!\n";
         } else {
             # Download the page
-            my $content = get $file_url or die die "ERROR! Failed to get \"$file_url\"!";
+            my $response = $ua->get($file_url);
+            die "ERROR! Failed to get \"$file_url\"!" unless $response->code == '200';
+            my $content = $response->content;
             open FH, ">$save_path" or die "ERROR! Failed to save file \"$save_path\"!";
             print FH $content;
             close FH;
