@@ -118,6 +118,7 @@ foreach (@ARGV) {
             my $file_url = $files[$i - 1];
             $content = get $file_url or die "ERROR! Failed to fetch \"$file_url\"!\n";
             open  FH, ">$save_path" or die "ERROR! Failed to save \"$save_path\"!\n";
+            binmode FH;
             print FH $content;
             close FH;
             print "SUCCESS!\n";
