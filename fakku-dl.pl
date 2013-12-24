@@ -147,6 +147,7 @@ foreach (@ARGV) {
             die "ERROR! Failed to get \"$file_url\"!" unless $response->code == '200';
             my $content = $response->content;
             open FH, ">$save_path" or die "ERROR! Failed to save file \"$save_path\"!";
+            binmode FH;
             print FH $content;
             close FH;
             print "SUCCESS!\n";
