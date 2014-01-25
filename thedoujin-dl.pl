@@ -62,8 +62,8 @@ foreach (@ARGV) {
 
     # Loop though all the files on the front page and get their links
     my @files = ();
-    for my $img ($tree->find(_tag => 'img')) {
-        push (@files, "http://thedoujin.com/images/$1/$2/$3.$4") if ($img->attr('src') =~ /^http:\/\/thedoujin.com\/thumbnails\/([0-9a-z]{2})\/([0-9a-z]{2})\/thumbnail_([0-9a-z]{32}).(jpg|png|gif)$/);
+    for my $lazydiv ($tree->find(_tag => 'div')) {
+        push (@files, "http://thedoujin.com/images/$1/$2/$3.$4") if ($lazydiv->attr('data-original') =~ /^http:\/\/thedoujin.com\/thumbnails\/([0-9a-z]{2})\/([0-9a-z]{2})\/thumbnail_([0-9a-z]{32}).(jpg|png|gif)$/);
     }
 
     # Loop through all the pages on the category page to find the file names and locations
@@ -89,8 +89,8 @@ foreach (@ARGV) {
             }
         }
 
-        for my $img ($tree->find(_tag => 'img')) {
-            push (@files, "http://thedoujin.com/images/$1/$2/$3.$4") if ($img->attr('src') =~ /^http:\/\/thedoujin.com\/thumbnails\/([0-9a-z]{2})\/([0-9a-z]{2})\/thumbnail_([0-9a-z]{32}).(jpg|png|gif)$/);
+        for my $lazydiv ($tree->find(_tag => 'div')) {
+            push (@files, "http://thedoujin.com/images/$1/$2/$3.$4") if ($lazydiv->attr('data-original') =~ /^http:\/\/thedoujin.com\/thumbnails\/([0-9a-z]{2})\/([0-9a-z]{2})\/thumbnail_([0-9a-z]{32}).(jpg|png|gif)$/);
         }
     }
 
