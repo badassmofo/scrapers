@@ -1,0 +1,50 @@
+[color]
+    ui = auto
+    interactive = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+[core]
+    excludesfile = ~/.gitignore
+    editor = /usr/local/bin/mvim
+	quotepath = false
+[mergetool "Kaleidoscope"]
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustexitcode = true
+[merge]
+    tool = Kaleidoscope
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[difftool]
+    prompt = false
+[mergetool]
+    prompt = false
+[diff]
+    tool = Kaleidoscope
+[alias]
+    plogg = "!source ~/.githelpers && pretty_git_log"
+    plog = !git plogg --all
+    dh = diff HEAD~1
+[tig]
+    show-date = relative
+    author-width = 8
+    show-rev-graph = yes
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[user]
+	name = Rusty Shackleford
+	email = gigolo@hotmail.co.uk
+[push]
+	default = simple
