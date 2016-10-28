@@ -9,11 +9,12 @@ alias ~="cd ~"
 alias pls="sudo"
 alias quit="exit"
 alias :q="exit"
-alias cp="rsync -hrvP"
-alias mv="rsync -hrvP --remove-source-files"
+alias copy="rsync -hrvP"
+alias move="rsync -hrvP --remove-source-files"
 alias mk="mkdir"
 alias sym="ln -rs"
 alias ls="ls --color=auto --group-directories-first"
+alias la="ls -A"
 alias grep="grep --color=auto"
 alias g="git"
 
@@ -43,15 +44,9 @@ alias ranger="vifm"
 alias py="python"
 alias py3="python3"
 alias tree="tree --dirsfirst -l -x -C -q"
-alias tile="osascript ~/.bin/termtile/tile.scpt "
-alias big="osascript ~/.bin/termtile/resize.scpt  "
-alias cen="osascript ~/.bin/termtile/center.scpt  "
-alias max="osascript ~/.bin/termtile/maximize.scpt  "
-alias cs="osascript ~/.bin/termtile/changeScreen.scpt next "
-alias full="osascript ~/.bin/termtile/fullscreen.scpt  "
 
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
-alias remoteip 'wget -qO- "http://dynupdate.no-ip.com/ip.php"'
+alias remoteip='wget -qO- "http://dynupdate.no-ip.com/ip.php"'
 alias battery="pmset -g ps | grep -oP '(\d+)%'"
 alias space_pc="df /dev/disk1 | grep -oP '(\d+)%'"
 alias space_gb="printf '%.3fgb\n' $(echo $(df /dev/disk1 | grep -m2 -oP '(\d+)' | awk '{i++}i==5') ' / 1048576' | bc -l)"
@@ -91,13 +86,14 @@ function a() {
 
 function scrotum() {
   screencapture -wS /tmp/screenshot.png
-  convert /tmp/screenshot.png \( +clone -background black -shadow 20x20x20x20+10+10+10+10 \) +swap -background none -layers merge +repage "$HOME/Dropbox/Screenshots/Screenshot "(date +"%Y-%m-%d %H.%M.%S")".png"
+  convert /tmp/screenshot.png \( +clone -background black -shadow 20x20x20x20+10+10+10+10 \) +swap -background none -layers merge +repage "$(echo "$HOME/Desktop/Screenshot" $(date +"%Y-%m-%d %H.%M.%S") ".png")"
   rm /tmp/screenshot.png
 }
 
-fortune | cowsay -W 76
-rvm default
-eval $(dircolors -b $HOME/.LS_COLORS)
+PROMPT="$ "
+SPROMPT="zsh: correct '%R' to '%r'? [N/y/a/e] "
+
+fortune | cowsay -W $(echo $(tput cols) " - 3" | bc -l) | lolcat -a --speed=100
 eval "$(thefuck --alias fuck)"
 qlmanage -r 1>/dev/null 2>/dev/null
-clear
+echo
