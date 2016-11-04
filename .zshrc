@@ -1,16 +1,12 @@
 #!/usr/bin/env zsh
 
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ~="cd ~"
-
+alias please='sudo $(fc -nl -1)'
+function try() {
+  eval $1 $(fc -nl -1 | cut -d " " -f2-)
+}
 alias pls="sudo"
 alias quit="exit"
 alias :q="exit"
-alias copy="rsync -hrvP"
-alias move="rsync -hrvP --remove-source-files"
 alias mk="mkdir"
 alias sym="ln -rs"
 alias ls="ls --color=auto --group-directories-first"
@@ -23,21 +19,21 @@ alias pics="cd ~/Pictures"
 alias db="cd ~/Dropbox/Shared"
 alias dev="cd ~/Dropbox/dev"
 
-alias gensokyo-ssh="ssh reimu@192.168.1.76"
-alias gensokyo="open http://192.168.1.76:5000"
-alias transmission-web="open http://192.168.1.180:9091"
-alias sonarr="open http://192.168.1.180:8989"
-alias nzbget="open http://192.168.1.180:6789"
+alias nas="ssh reimu@192.168.1.76"
+alias nas-web="open http://192.168.1.76:5000"
+alias transmission-web="open http://192.168.1.76:9091"
+alias sonarr="open http://192.168.1.76:8989"
+alias nzbget="open http://192.168.1.76:6789"
 alias plex="open http://192.168.1.76:32400/web/index.html"
-alias couchpotato="open http://192.168.1.180:5050"
+alias couchpotato="open http://192.168.1.76:5050"
 alias btsync="open http://192.168.1.76:8890"
-alias headphones="open http://192.168.1.180:8181"
+alias headphones="open http://192.168.1.76:8181"
 
 alias vimc="nvim ~/.config/nvim/init.vim"
 alias zshc="nvim ~/.zshrc"
-alias path="echo -n ${PATH//:/\\n}"
+alias path='echo -e "${PATH//:/\\n}"'
 
-alias zeronet="cd ~/build/ZeroNet; python zeronet.py"
+alias zeronet="cd ~/.build/ZeroNet; python zeronet.py"
 alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc"
 alias vim="nvim"
 alias ranger="vifm"
@@ -59,29 +55,31 @@ function mkd() {
   mkdir -p "$@" && cd "$_";
 }
 
-function cdf() {
-  cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
-}
-
-function fs() {
-  if du -b /dev/null > /dev/null 2>&1; then
-    local arg=-sbh;
-  else
-    local arg=-sh;
-  fi
+function size() {
   if [[ -n "$@" ]]; then
-    du $arg -- "$@";
+    du -sbh -- "$@"
   else
-    du $arg .[^.]* ./*;
-  fi;
+    du -sbh .[^.]* ./*
+  fi
 }
 
-function a() {
+function edit() {
   if [ $# -eq 0 ]; then
-    atom .;
+    atom .
   else
-    atom "$@";
-  fi;
+    atom "$@"
+  fi
+}
+
+function alert() {
+  full="$@"
+  cmd=$(echo $full | cut -d " " -f1)
+  args=$(echo $full | cut -d " " -f2-)
+  if eval $full; then
+    terminal-notifier -title "'$cmd' has finished!" -message "With args: '$args'" -sound "ja jan"
+  else
+    terminal-notifier -title "'$cmd' has failed!" -message "With args: '$args'" -sound "Sosumi"
+  fi
 }
 
 function scrotum() {
@@ -90,10 +88,23 @@ function scrotum() {
   rm /tmp/screenshot.png
 }
 
+function github() {
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    cmd=$(git config --get remote.origin.url)
+    if [[ "$cmd" =~ "git@github.com:.*\/.*\.git" ]]; then
+      open $(echo $cmd | sed 's/:/\//g' | sed 's/git@/http:\/\//g')
+    else
+      open $cmd
+    fi
+  else
+    open "http://www.github.com/takeiteasy/"
+  fi
+}
+
 PROMPT="$ "
 SPROMPT="zsh: correct '%R' to '%r'? [N/y/a/e] "
 
-fortune | cowsay -W $(echo $(tput cols) " - 3" | bc -l) | lolcat -a --speed=100
+fortune | cowsay -W $(echo $(tput cols) " - 5" | bc -l) | lolcat -a --speed=100
 eval "$(thefuck --alias fuck)"
 qlmanage -r 1>/dev/null 2>/dev/null
 echo
