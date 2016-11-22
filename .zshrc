@@ -7,7 +7,7 @@ function try() {
 alias pls="sudo"
 alias quit="exit"
 alias :q="exit"
-alias mk="mkdir"
+alias mkd="mkdir"
 alias sym="ln -rs"
 alias ls="ls --color=auto --group-directories-first"
 alias la="ls -A"
@@ -40,6 +40,14 @@ alias ranger="vifm"
 alias py="python"
 alias py3="python3"
 alias tree="tree --dirsfirst -l -x -C -q"
+function xcode() {
+	for x in "$@"; do
+		if [[ ! -a $x ]]; then
+			touch $x
+		fi
+	done
+	open -a /Applications/Xcode.app $@
+}
 
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 alias remoteip='wget -qO- "http://dynupdate.no-ip.com/ip.php"'
@@ -51,7 +59,7 @@ alias space="printf '%s (%s)\n' $(space_gb) $(space_pc)"
 alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
 alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
 
-function mkd() {
+function mkcd() {
   mkdir -p "$@" && cd "$_";
 }
 
@@ -101,7 +109,30 @@ function github() {
   fi
 }
 
-PROMPT="$ "
+function clone-all() {
+  echo $(wget -qO- "https://api.github.com/users/takeiteasy/repos") | jq -r ".[] | .ssh_url" | while read -r line; do
+    repo=$(basename $(echo $line) | rev | cut -d '.' -f2- | rev)
+    if [[ ! -d $repo ]]; then
+      git clone $line
+    fi
+  done
+}
+
+function bak() {
+  for x in "$@"; do
+    if [[ "$x" =~ "^.*\..*\.bak$" ]]; then
+      if [[ -a "$x" ]]; then
+        mv -v "$x" "${x:0:-4}"
+      else
+        echo "File doesn't exist: \"$x\""
+      fi
+    else
+      mv -v "$x" "$x.bak"
+    fi
+  done
+}
+
+PROMPT="❯ "
 SPROMPT="zsh: correct '%R' to '%r'? [N/y/a/e] "
 
 fortune | cowsay -W $(echo $(tput cols) " - 5" | bc -l) | lolcat -a --speed=100
