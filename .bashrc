@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 alias please='sudo $(fc -nl -1)'
 function try() {
@@ -12,15 +12,12 @@ alias sym="ln -rs"
 alias ls="ls --color=auto --group-directories-first"
 alias la="ls -A"
 alias grep="grep --color=auto"
-alias g="git"
-
-alias dl="cd ~/Downloads"
-alias pics="cd ~/Pictures"
-alias db="cd ~/Dropbox/Shared"
-alias dev="cd ~/Dropbox/dev"
 
 alias nas="ssh reimu@192.168.1.76"
 alias nas-web="open http://192.168.1.76:5000"
+function nas-anime-ren-ssh() {
+	ssh reimu@192.168.1.76 bash -c "`perl nas-anime-ren.pl '$@' | sed 's/\/Volumes\//\/volume1\//g'`"
+}
 alias transmission-web="open http://192.168.1.76:9091"
 alias sonarr="open http://192.168.1.76:8989"
 alias nzbget="open http://192.168.1.76:6789"
@@ -36,6 +33,7 @@ alias path='echo -e "${PATH//:/\\n}"'
 alias zeronet="cd ~/.build/ZeroNet; python zeronet.py"
 alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources/jsc"
 alias vim="nvim"
+alias git="hub"
 alias ranger="vifm"
 alias py="python"
 alias py3="python3"
@@ -68,14 +66,6 @@ function size() {
     du -sbh -- "$@"
   else
     du -sbh .[^.]* ./*
-  fi
-}
-
-function edit() {
-  if [ $# -eq 0 ]; then
-    atom .
-  else
-    atom "$@"
   fi
 }
 
@@ -132,10 +122,66 @@ function bak() {
   done
 }
 
-PROMPT="❯ "
-SPROMPT="zsh: correct '%R' to '%r'? [N/y/a/e] "
+function currency() {
+	if [[ -n $3 ]]; then
+		args="&symbols=$(printf "%s," "${@:3}" | sed 's/,$//' | tr '[:lower:]' '[:upper:]')"
+	fi
+	wget -qO- "http://api.fixer.io/latest?base=$2$args" | jq -r ".rates | keys[] as \$k | \"\(\$k)=\(.[\$k] * $1)\""
+}
 
-fortune | cowsay -W $(echo $(tput cols) " - 5" | bc -l) | lolcat -a --speed=100
+function stock() {
+	usage="needs to arguments to work...\n\tusage: ./stocks.bash lookup [company name]\n\t       ./stocks.bash quote  [company symbol]"
+
+	if [[ -z $2 ]]; then
+		echo -e $usage
+		return -1
+	fi
+
+	case "$1" in
+		"quote")
+			json=$(wget -qO- "http://dev.markitondemand.com/Api/v2/Quote/json?symbol=$2")
+			sym=$(echo $json | jq -r '.Symbol')
+			price=$(echo $json | jq -r '.LastPrice')
+			cpc=$(printf "%.2f" "$(echo $json | jq -r '.ChangePercent')")
+			if [[ $(echo "$cpc<0" | bc) -eq 1 ]]; then
+				cpcc="\e[101m↓"
+			else
+				cpcc="\e[102m↑"
+			fi
+			echo -e "$cpcc $cpc%\e[0m $sym@$price" ;;
+		"lookup")
+			wget -qO- "http://dev.markitondemand.com/Api/v2/Lookup/json?input=$2" | jq -r '.[] | "\(.Symbol): \(.Name)"' ;;
+		*)
+			echo -e $usage ;;
+		esac
+}
+
+function audio() {
+	input=${1-'(choose from list {"Internal Speakers", "Bose Mini II SoundLink", "PLEX-PC"} with title "Sound Picker" default items {"Internal Speakers"}) as text'}
+
+	if [[ "$input" = "$1" ]]; then
+		input="\"$input\""
+	fi
+
+	osascript -e "
+		set asrc to $input
+		tell application \"System Preferences\"
+			reveal anchor \"output\" of pane id \"com.apple.preference.sound\"
+			activate
+
+			tell application \"System Events\"
+				tell process \"System Preferences\"
+					select (row 1 of table 1 of scroll area 1 of tab group 1 of window \"Sound\" whose value of text field 1 is asrc)
+				end tell
+			end tell
+
+			quit
+		end tell"
+}
+
+export PS1="❯ "
+
+fortune | cowsay -W $(echo $(tput cols) " - 5" | bc -l) | lolcat -a --speed=500
 eval "$(thefuck --alias fuck)"
 qlmanage -r 1>/dev/null 2>/dev/null
 echo
