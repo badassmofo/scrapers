@@ -12,6 +12,8 @@ alias sym="ln -rs"
 alias ls="ls --color=auto --group-directories-first"
 alias la="ls -A"
 alias grep="grep --color=auto"
+alias del="/bin/rm"
+alias rm="trash"
 
 alias nas="ssh reimu@192.168.1.76"
 alias nas-web="open http://192.168.1.76:5000"
@@ -78,6 +80,12 @@ function alert() {
   else
     terminal-notifier -title "'$cmd' has failed!" -message "With args: '$args'" -sound "Sosumi"
   fi
+}
+
+function countdown() {
+	s=`echo "$(python ~/git/utils/milliseconds.py "$@") / 1000" | bc`
+	sleep "$s"
+	terminal-notifier -title "Countdown has finished" -message "After $s seconds" -sound "Glass"
 }
 
 function scrotum() {
