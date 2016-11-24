@@ -14,6 +14,10 @@ alias la="ls -A"
 alias grep="grep --color=auto"
 alias del="/bin/rm"
 alias rm="trash"
+function cdf() {
+  cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
+}
+alias cdfinder="cdf"
 
 alias nas="ssh reimu@192.168.1.76"
 alias nas-web="open http://192.168.1.76:5000"
@@ -37,8 +41,10 @@ alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resour
 alias vim="nvim"
 alias git="hub"
 alias ranger="vifm"
-alias py="python"
-alias py3="python3"
+alias py="python3"
+alias python="python3"
+alias py2="/usr/bin/python"
+alias python2="/usr/bin/python"
 alias tree="tree --dirsfirst -l -x -C -q"
 function xcode() {
 	for x in "$@"; do
@@ -59,16 +65,54 @@ alias space="printf '%s (%s)\n' $(space_gb) $(space_pc)"
 alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
 alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
 
+function a() {
+  if [ $# -eq 0 ]; then
+    atom .;
+  else
+    atom "$@";
+  fi
+}
+
+function v() {
+  if [ $# -eq 0 ]; then
+    vim .
+  else
+    vim "$@"
+  fi
+}
+
+function o() {
+  if [ $# -eq 0 ]; then
+    open .
+  else
+    open "$@"
+  fi
+}
+
 function mkcd() {
   mkdir -p "$@" && cd "$_";
 }
 
+function clone {
+  git clone $1;
+  cd `echo $1 | awk -F/ '{print $NF}' | sed -e 's/.git$//'`;
+}
+
 function size() {
+  if du -b /dev/null > /dev/null 2>&1; then
+    local arg=-sbh
+  else
+    local arg=-sh
+  fi
   if [[ -n "$@" ]]; then
     du -sbh -- "$@"
   else
     du -sbh .[^.]* ./*
   fi
+}
+
+function tre() {
+  tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
 }
 
 function alert() {
@@ -83,7 +127,7 @@ function alert() {
 }
 
 function countdown() {
-	s=`echo "$(python ~/git/utils/milliseconds.py "$@") / 1000" | bc`
+	s=`echo "$(python3 ~/git/utils/milliseconds.py "$@") / 1000" | bc`
 	sleep "$s"
 	terminal-notifier -title "Countdown has finished" -message "After $s seconds" -sound "Glass"
 }
@@ -97,7 +141,7 @@ function scrotum() {
 function github() {
   if git rev-parse --git-dir > /dev/null 2>&1; then
     cmd=$(git config --get remote.origin.url)
-    if [[ "$cmd" =~ "git@github.com:.*\/.*\.git" ]]; then
+    if [[ "$cmd" =~ ^git@github\.com:.*\/.*\.git$ ]]; then
       open $(echo $cmd | sed 's/:/\//g' | sed 's/git@/http:\/\//g')
     else
       open $cmd
@@ -126,6 +170,29 @@ function bak() {
       fi
     else
       mv -v "$x" "$x.bak"
+    fi
+  done
+}
+
+extr () {
+  for x in "$@"; do
+    if [ -f $x ] ; then
+      case $x in
+        *.tar.bz2)   tar xvjf $x    ;;
+        *.tar.gz)    tar xvzf $x    ;;
+        *.bz2)       bunzip2 $x     ;;
+        *.rar)       rar x $x       ;;
+        *.gz)        gunzip $x      ;;
+        *.tar)       tar xvf $x     ;;
+        *.tbz2)      tar xvjf $x    ;;
+        *.tgz)       tar xvzf $x    ;;
+        *.zip)       unzip $x       ;;
+        *.Z)         uncompress $x  ;;
+        *.7z)        7z x $x        ;;
+        *)           echo "don't know '$x'..." ;;
+      esac
+    else
+      echo "'$1' is not a valid file!"
     fi
   done
 }
@@ -187,9 +254,21 @@ function audio() {
 		end tell"
 }
 
+function shinatra() { # https://github.com/benrady/shinatra
+  RESPONSE="HTTP/1.1 200 OK\r\nConnection: keep-alive\r\n\r\n${2:-"OK"}\r\n"
+  while { echo -en "$RESPONSE"; } | nc -l "${1:-8080}"; do
+    echo "================================================"
+  done
+}
+
+function stfu() {
+  $@ 1>/dev/null 2>/dev/null
+}
+
 export PS1="❯ "
 
 fortune | cowsay -W $(echo $(tput cols) " - 5" | bc -l) | lolcat -a --speed=500
 eval "$(thefuck --alias fuck)"
 qlmanage -r 1>/dev/null 2>/dev/null
 echo
+if [ -f $(brew --prefix)/etc/bash_completion ]; then source $(brew --prefix)/etc/bash_completion; fi
