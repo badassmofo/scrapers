@@ -33,6 +33,8 @@ alias btsync="open http://192.168.1.76:8890"
 alias headphones="open http://192.168.1.76:8181"
 
 alias vimc="nvim ~/.config/nvim/init.vim"
+alias c="clang"
+alias c++="clang++ --std=c++14"
 alias zshc="nvim ~/.zshrc"
 alias path='echo -e "${PATH//:/\\n}"'
 
@@ -65,6 +67,10 @@ alias space="printf '%s (%s)\n' $(space_gb) $(space_pc)"
 alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
 alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
 
+function macfeh() {
+  open -b "drabweb.macfeh" "$@"
+}
+
 function a() {
   if [ $# -eq 0 ]; then
     atom .;
@@ -75,9 +81,9 @@ function a() {
 
 function v() {
   if [ $# -eq 0 ]; then
-    vim .
+    nvim .
   else
-    vim "$@"
+    nvim "$@"
   fi
 }
 
@@ -174,7 +180,11 @@ function bak() {
   done
 }
 
-extr () {
+function view() {
+	cat "$@" | highlight --line-number --out-format=xterm256 | less -R
+}
+
+function extr () {
   for x in "$@"; do
     if [ -f $x ] ; then
       case $x in

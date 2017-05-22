@@ -3,10 +3,11 @@ set nocompatible
 filetype off
 
 call plug#begin()
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'tweekmonster/deoplete-clang2'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter', {'branch': 'nvim'}
-Plug 'Valloric/YouCompleteMe'
 Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-endwise'
@@ -21,9 +22,8 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'godlygeek/tabular'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-
+Plug 'lfilho/cosco.vim'
 Plug 'takeiteasy/vim-monochrome'
-Plug 'takeiteasy/vim-fish'
 call plug#end()
 
 syntax enable
@@ -96,7 +96,7 @@ function! NumberToggle()
 		set relativenumber
 	endif
 endfunc
-nnoremap <C-n> :call NumberToggle()<cr>
+nnoremap <F5> :call NumberToggle()<cr>
 nnoremap ; :
 nnoremap <leader>; ;
 nnoremap j gj
@@ -108,9 +108,20 @@ nnoremap ^ <nop>
 nnoremap gV `[v`]
 inoremap jk <esc>
 nnoremap <leader>q :q<CR>
+nnoremap <leader>s :w<CR>
 nnoremap <Space> za
 vnoremap <Space> za
 noremap <F3> :set list!<CR>
+
+let g:deoplete#enable_at_startup=1
+function g:Multiple_cursors_before()
+	let g:deoplete#disable_auto_complete = 1
+endfunction
+function g:Multiple_cursors_after()
+	let g:deoplete#disable_auto_complete = 0
+endfunction
+
+let g:deoplete#sources#clang#executable = '/usr/bin/clang'
 
 let s:base03  = [ '#242424', 235 ]
 let s:base023 = [ '#353535 ', 236 ]
@@ -234,7 +245,7 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
-nnoremap <F5> :MundoToggle<CR>
+nnoremap <F4> :MundoToggle<CR>
 let g:mundo_width=30
 let g:mundo_preview_height=10
 let g:mundo_right=0
@@ -245,3 +256,7 @@ let g:NERDSpaceDelims=1
 let g:NERDCompactSexyComs=1
 let g:NERDCommentEmptyLines=1
 let g:NERDTrimTrailingWhitespace=1
+
+" let g:auto_comma_or_semicolon = 1
+autocmd FileType javascript,css,cpp,c nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
+autocmd FileType javascript,css,cpp,c imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
