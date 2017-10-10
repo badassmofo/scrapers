@@ -57,6 +57,7 @@ function xcode() {
 	open -a /Applications/Xcode.app $@
 }
 
+alias spoof="sudo ifconfig en0 ether $(openssl rand -hex 6 | sed 's%\(..\)%\1:%g; s%.$%%')"
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 alias remoteip='wget -qO- "http://dynupdate.no-ip.com/ip.php"'
 alias battery="pmset -g ps | grep -oP '(\d+)%'"
@@ -97,6 +98,14 @@ function o() {
 
 function mkcd() {
   mkdir -p "$@" && cd "$_";
+}
+
+function yt() {
+  mpv "$(echo https://www.youtube.com/watch?v=)$(youtube-dl ytsearch:"$*" -q --get-id --skip-download)"
+}
+
+function ytnv() {
+  mpv --no-video "$(echo https://www.youtube.com/watch?v=)$(youtube-dl ytsearch:"$*" -q --get-id --skip-download)"
 }
 
 function clone {

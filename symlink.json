@@ -1,6 +1,0 @@
-{
-	".git*?": "~/",
-	".z*": "~/",
-	"mpv/": "~/.config/",
-	"init.vim": "~/.config/nvim/"
-}
