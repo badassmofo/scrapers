@@ -24,6 +24,8 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'lfilho/cosco.vim'
 Plug 'takeiteasy/vim-monochrome'
+Plug 'takeiteasy/vim-fish'
+Plug 'DavidFeng/vim-red'
 call plug#end()
 
 syntax enable
@@ -102,7 +104,9 @@ nnoremap <leader>; ;
 nnoremap j gj
 nnoremap k gk
 nnoremap B ^
+vnoremap B ^
 nnoremap E $
+vnoremap E $
 nnoremap $ <nop>
 nnoremap ^ <nop>
 nnoremap gV `[v`]
@@ -112,6 +116,9 @@ nnoremap <leader>s :w<CR>
 nnoremap <Space> za
 vnoremap <Space> za
 noremap <F3> :set list!<CR>
+noremap <silent> <C-S> :update<CR>
+vnoremap <silent> <C-S> <C-C>:update<CR>
+inoremap <silent> <C-S> <C-O>:update<CR>
 
 let g:deoplete#enable_at_startup=1
 function g:Multiple_cursors_before()

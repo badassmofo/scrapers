@@ -40,9 +40,10 @@
     author-width = 8
     show-rev-graph = yes
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
 	required = true
+	process = git-lfs filter-process
 [user]
 	name = Rusty Shackleford
 	email = gigolo@hotmail.co.uk
