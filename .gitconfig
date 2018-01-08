@@ -16,7 +16,7 @@
     untracked = cyan
 [core]
     excludesfile = ~/.gitignore
-    editor = /usr/local/bin/mvim
+    editor = /usr/local/bin/nvim
 	quotepath = false
 [mergetool "Kaleidoscope"]
     cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
