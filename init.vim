@@ -26,6 +26,7 @@ Plug 'lfilho/cosco.vim'
 Plug 'takeiteasy/vim-monochrome'
 Plug 'takeiteasy/vim-fish'
 Plug 'DavidFeng/vim-red'
+Plug 'StanAngeloff/php.vim'
 call plug#end()
 
 syntax enable
