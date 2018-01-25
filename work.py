@@ -12,11 +12,15 @@ browser["txtUserID"] = ""
 browser["txtPassword"] = ""
 response = browser.submit_selected()
 
+page = browser.get_current_page()
+genshiftid = page.find_all(id='genshiftid')[0].get('value')
+
 path_to_schedule = "/Users/roryb/Downloads/schedule.pdf"
 dt = datetime.today()
 start = dt - timedelta(days=dt.weekday())
 end = start + timedelta(days=20)
-r = requests.post("https://www.peoplestuffuk.com/WFMMCDPRD/rws/ess/print/printSchedulePDF.jsp?newwin=Y&pageSize=A4&dispPeriod={}%20to%20{}&personid=388353&personname=%20Watson%20,%20%20George%20&genshiftid=71802&qrygenshifts=61804NXT61803NXT71802&editweek={}_{}".format(start.strftime('%d/%m/%Y'), end.strftime('%d/%m/%Y'), dt.strftime('%Y'), dt.strftime('%V')), stream=True, cookies=requests.utils.dict_from_cookiejar(browser.get_cookiejar()))
+url = "https://www.peoplestuffuk.com/WFMMCDPRD/rws/ess/print/printSchedulePDF.jsp?newwin=Y&pageSize=A4&dispPeriod={}%20to%20{}&personid=388353&personname=%20Watson%20,%20%20George%20&genshiftid={}&qrygenshifts=61805NXT71804&editweek={}_{}".format(start.strftime('%d/%m/%Y'), end.strftime('%d/%m/%Y'), genshiftid, dt.strftime('%Y'), int(dt.strftime('%V')) + 1) 
+r = requests.post(url, stream=True, cookies=requests.utils.dict_from_cookiejar(browser.get_cookiejar()))
 if r.status_code == 200:
     with open(path_to_schedule, 'wb') as f:
         for chunk in r:
