@@ -1,0 +1,173 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
+  display: block;
+  font-family: '.SFNSText-Regular', 'San Francisco Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+  font-size: small;
+  background-color: #e8e8e8;
+}
+
+canvas, .canvas-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.main {
+  width: calc(100% - 140px);
+  height: calc(100% - 10px);
+  margin: 5px;
+  background-color: white;
+  position: relative;
+}
+
+.main > .canvas-container:hover {
+  border: 1px solid #3879d9;
+}
+
+.sidebar {
+  width: 125px;
+  height: calc(100% - 10px);
+  background-color: white;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  display: flex;
+  flex-flow: row wrap;
+  flex-wrap: wrap;
+  align-content: center;
+  overflow: scroll;
+}
+
+.siderbar_inner {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 2px);
+  z-index: 1;
+}
+
+.siderbar_inner:hover {
+  border: 1px solid #3879d9;
+}
+
+.siderbar_inner:hover~.header {
+  display: block;
+}
+
+.canvas-container:hover~.header {
+  display: block;
+}
+
+/*.canvas-container .library_file {
+  display: none;
+}*/
+
+.header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: #3879d9;
+  padding: 3px;
+  display: none;
+  color: white;
+  z-index: 999;
+  pointer-events: none;
+}
+
+#editor_pos {
+  top: auto;
+  left: auto;
+  bottom: -1px !important;
+  right: -1px !important;
+}
+
+.main {
+  pointer-events: none;
+}
+
+.canvas-container {
+  pointer-events: auto;
+}
+
+#add_button {
+  top: auto;
+  left: auto;
+  bottom: -1px !important;
+  right: -1px !important;
+  font-weight: bold;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#add_button:hover {
+  display: block;
+}
+
+.library_file {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 80px;
+  margin: 15px;
+  width: 100px;
+}
+
+.library_file:hover {
+  border: 1px solid rgba(1, 1, 1, 0.5);
+}
+
+.library_file:hover .library_file_header {
+  display: block;
+}
+
+.library_file_header {
+  background-color: rgba(1, 1, 1, 0.5);
+  color: #eee;
+  display: none;
+  font-size: smaller;
+  height: 14px;
+  overflow-x: hidden;
+  text-align: center;
+  width: 100%;
+  z-index: 10;
+
+}
+
+.marquee {
+  animation: slide 2s infinite;
+}
+
+@-webkit-keyframes slide {
+    0% { transform: translate(0px,   0px); }
+	 50% { transform: translate(-150px, 0px); }
+  100% { transform: translate(0px,   0px); }
+}
+
+.hidden_images {
+  display: none;
+}
+
+.gu-mirror {
+  position: fixed!important;
+  margin: 0!important;
+  z-index: 9999!important;
+  opacity: .8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80)
+}
+
+.gu-hide {
+  display: none!important
+}
+
+.gu-unselectable {
+  -webkit-user-select: none!important;
+  -moz-user-select: none!important;
+  -ms-user-select: none!important;
+  user-select: none!important
+}
+
+.gu-transit {
+  display: none !important;
+}

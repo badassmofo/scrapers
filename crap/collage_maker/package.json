@@ -1,0 +1,14 @@
+{
+  "name": "game_maker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "it": "electron index.js"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "electron": "^1.7.9"
+  }
+}

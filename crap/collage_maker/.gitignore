@@ -1,0 +1,7 @@
+*.xcodeproj
+a.out
+bower_components/
+node_modules/
+www/lib/
+package-lock.json
+make_image
