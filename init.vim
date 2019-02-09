@@ -25,8 +25,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'lfilho/cosco.vim'
 Plug 'takeiteasy/vim-monochrome'
 Plug 'takeiteasy/vim-fish'
-Plug 'DavidFeng/vim-red'
-Plug 'StanAngeloff/php.vim'
+Plug 'rhysd/vim-crystal'
 call plug#end()
 
 syntax enable
@@ -268,3 +267,6 @@ let g:NERDTrimTrailingWhitespace=1
 " let g:auto_comma_or_semicolon = 1
 autocmd FileType javascript,css,cpp,c nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
 autocmd FileType javascript,css,cpp,c imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
+
+let g:python2_host_prog = '/usr/local/bin/python'
+let g:python3_host_prog = '/usr/local/bin/python3'

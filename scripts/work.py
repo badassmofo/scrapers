@@ -22,7 +22,7 @@ for i, x in enumerate(qrygenshifts_arr):
         qrygenshifts += "NXT"
 genshiftid = page.find_all(id='genshiftid')[0].get('value')
 
-path_to_schedule = "/Users/roryb/Downloads/schedule.pdf"
+path_to_schedule = ""
 dt = datetime.today()
 start = dt - timedelta(days=dt.weekday())
 end = start + timedelta(days=20)
@@ -101,12 +101,12 @@ if not work_cal:
 
 for e in work_cal.events():
     try:
-        e.delete()
+        if e.data:
+            e.delete()
     except:
         pass
 
 for date in dates:
-    print("WORK AT {} to {} on {}".format(date[1], date[2], date[0].strftime("%d/%m/%Y")))
     end = date[2]
     if float(date[1].replace(":", ".")) + float(date[3].replace(":", ".")) > 24:
         end = "23:59"
