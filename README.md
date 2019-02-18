@@ -1,4 +1,4 @@
-# stuff
+# dotfiles
 
 ## License
 

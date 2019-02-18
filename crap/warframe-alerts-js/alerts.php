@@ -1,1 +1,0 @@
-<? echo str_replace("wf:", "wf", @file_get_contents("http://content.warframe.com/dynamic/rss.php", 0, stream_context_create(array('http' => array('timeout' => 5))))); ?>
